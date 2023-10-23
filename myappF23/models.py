@@ -48,3 +48,16 @@ class Course(models.Model):
         return self.title
 
 
+class Order(models.Model):
+    ORDER_STATUS_CHOICES = [
+        (0, 'Order Confirmed'),
+        (1, 'Order Cancelled'),
+    ]
+
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    order_status = models.IntegerField(choices=ORDER_STATUS_CHOICES, default=1)
+    order_date = models.DateField()
+
+    def __str__(self):
+        return f"Order for {self.course} by {self.student}"
