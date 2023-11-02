@@ -7,11 +7,11 @@ from .models import Category, Course, Instructor
 
 def index(request):
     category_list = Category.objects.all().order_by('id')[:10]
-    return render(request, 'myappF23/index0.html', {'category_list': category_list})
+    return render(request, 'myappF23/index.html', {'category_list': category_list})
 
 
 def about(request):
-    return render(request, "myappF23/about0.html")
+    return render(request, "myappF23/about.html")
 
 
 def detail(request, category_no):
@@ -23,7 +23,7 @@ def detail(request, category_no):
         'courses': courses,
     }
 
-    return render(request, 'myappF23/detail0.html', context)
+    return render(request, 'myappF23/detail.html', context)
 
 
 def instructor(request, instructor_id):

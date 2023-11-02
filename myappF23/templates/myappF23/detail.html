@@ -1,0 +1,21 @@
+{% extends 'myappF23/base.html' %}
+{% block body_block %}
+    <body>
+    <h2>Category Details</h2>
+    <p><strong>Name:</strong> {{ category.name }}</p>
+
+    {% if category.categories %}
+    <p><strong>Category:</strong> {{ category.categories.name }}</p>
+    {% endif %}
+
+    <h3>Courses in this Category:</h3>
+    <ul>
+        {% for course in courses %}
+            <li>{{ course.title }} - Price: ${{ course.price }}</li>
+        {% endfor %}
+    </ul>
+
+    <!-- Link to go back to the main page using URL namespacing -->
+    <p><a href="{% url 'myappF23:index' %}">Go back to Main Page</a></p>
+</body>
+{% endblock %}
