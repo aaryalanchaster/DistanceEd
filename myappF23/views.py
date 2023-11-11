@@ -83,6 +83,6 @@ def coursedetail(request, course_id):
             if interested == 1:
                 course.interested += 1
                 course.save()
-                return redirect('index')  # Redirect to the main index page after updating interested count
+                return redirect('myappF23:index')  # Redirect to the main index page after updating interested count
 
     return render(request, 'myappF23/coursedetail.html', {'course': course, 'form': form})
