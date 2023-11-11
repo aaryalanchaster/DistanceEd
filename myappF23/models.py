@@ -46,6 +46,7 @@ class Course(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     level = models.CharField(
         max_length=10, choices=COURSE_LEVEL_CHOICE, default='Beginner')
+    interested = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.title
@@ -60,6 +61,19 @@ class Order(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     order_status = models.IntegerField(choices=ORDER_STATUS_CHOICES, default=1)
     order_date = models.DateField()
+    order_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    levels = models.PositiveIntegerField(default=1)
+
+    def discount(self):
+        discount_value = 0.10 * float(self.course.price) * float(self.levels)
+        self.order_price = float(self.course.price) * float(self.levels) - discount_value
+        self.save()
+
+    def save(self, *args, **kwargs):
+        # Calculate the order price with a 10% discount
+        discount_amount = 0.10 * float(self.course.price) * float(self.levels)
+        self.order_price = float(self.course.price) * float(self.levels) - discount_amount
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Order for {self.student} - {self.course} - Status: {self.get_order_status_display()}"
