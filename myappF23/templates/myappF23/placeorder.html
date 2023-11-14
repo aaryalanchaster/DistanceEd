@@ -1,0 +1,18 @@
+{% extends 'myappF23/base.html' %}
+
+{% block body_block %}
+     <h2>List of Courses</h2>
+    <ul>
+        {% for course in courselist %}
+            <li>{{ course.title }} - {{ course.price }}</li>
+        {% endfor %}
+    </ul>
+    <h2>Place an Order</h2>
+    <form method="post" action="">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Place Order</button>
+    </form>
+
+
+{% endblock %}
