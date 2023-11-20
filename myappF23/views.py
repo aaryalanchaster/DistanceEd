@@ -83,27 +83,13 @@ def courses(request):
 
 def place_order(request):
     msg = ''
-    courlist = Course.objects.all()
+    courselist = Course.objects.all()
 
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
             order = form.save()
 
-            if order.levels > order.course.max_levels:
-                msg = 'You exceeded the number of levels for this course.'
-                order.delete() 
-                return render(request, 'myappF23/order_response.html', {'msg':msg})
-            else:
-                msg = 'Your course has been ordered successfully.'
-
-                if order.course.price > 150.00:
-                    order.discount()
-                    
-                    msg = "Your course has been ordered successfully."
-                    return render(request, 'myappF23/order_response.html', {'msg':msg})
-        else:
-            msg = 'Form submission is invalid. Please check your inputs.'
             if int(order.levels) > int(order.course.level):
                 order.delete()
                 msg = 'You exceeded the number of levels for this course.'
@@ -118,8 +104,7 @@ def place_order(request):
     else:
         form = OrderForm()
 
-    return render(request, 'myappF23/placeorder.html', {'msg': msg, 'courlist': courlist, 'form': form})
-
+    return render(request, 'myappF23/placeorder.html', {'form': form, 'msg': msg, 'courselist': courselist})
 
 def coursedetail(request, course_id):
     course = get_object_or_404(Course, pk=course_id)
@@ -182,14 +167,13 @@ def myaccount(request):
     else:
         return HttpResponse('You are not a registered student!')
 
-
+# different views to test cookies in lab9
 def set_cookie(request):
     response = HttpResponse("Setting test cookie.")
     response.set_cookie('test_cookie', 'cookie_value')
     return response
 
 
-# Example view to check if the test cookie worked
 def check_cookie(request):
     if 'test_cookie' in request.COOKIES:
         return HttpResponse("Test cookie is working.")
@@ -197,7 +181,6 @@ def check_cookie(request):
         return HttpResponse("Test cookie is not set.")
 
 
-# Example view to delete the test cookie
 def delete_cookie(request):
     response = HttpResponse("Deleting test cookie.")
     response.delete_cookie('test_cookie')
