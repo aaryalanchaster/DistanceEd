@@ -10,6 +10,16 @@
             <strong>There are no available categories!</strong>
             {% endif %}
 
+    <p>This page has been visited {{ visits }} times.</p>
+
+      {% if request.session.last_login_info %}
+        <p>Last Login: {{ request.session.last_login_info }}</p>
+      {% endif %}
+
+      {% if message %}
+    <p>{{ message }}</p>
+{% endif %}
+
 {#            <p><a href="{% url 'myappF23:about' %}">About page</a></p>#}
         </body>
 {% endblock %}

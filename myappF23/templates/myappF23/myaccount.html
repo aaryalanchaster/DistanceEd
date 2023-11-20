@@ -1,0 +1,28 @@
+
+{% extends 'myappF23/base.html' %}
+{% block body_block %}
+<body>
+
+{% if student %}
+    <h2>Welcome, {{ student.full_name }}</h2>
+
+    <h3>Courses Ordered:</h3>
+    <ul>
+        {% for order in orders %}
+            <li>{{ order.course.title }} - Order Date: {{ order.order_date }}</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Courses Interested In:</h3>
+    <ul>
+        {% for course in interested_courses %}
+            <li>{{ course.title }}</li>
+        {% endfor %}
+    </ul>
+
+{% else %}
+    <p>You are not a registered student!</p>
+{% endif %}
+
+</body>
+{% endblock %}

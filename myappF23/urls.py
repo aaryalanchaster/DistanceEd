@@ -12,5 +12,11 @@ urlpatterns = [
     path('courses/', views.courses, name='courses'),
     path('place_order/', views.place_order, name='place_order'),
     path('courses/<int:course_id>/', views.coursedetail, name='coursedetail'),
+    path('login/', views.user_login, name='login'),
+    path('logout/', views.user_logout, name='logout'),
+    path('myaccount/', views.myaccount, name='myaccount'),
+    path('set_cookie/', views.set_cookie, name='set_test_cookie'),
+    path('check_cookie/', views.check_cookie, name='check_test_cookie'),
+    path('delete_cookie/', views.delete_cookie, name='delete_test_cookie'),
 
 ]

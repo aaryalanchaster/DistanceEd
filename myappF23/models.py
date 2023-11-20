@@ -44,8 +44,9 @@ class Course(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    level = models.CharField(
-        max_length=10, choices=COURSE_LEVEL_CHOICE, default='Beginner')
+    # level = models.CharField(
+    #     max_length=10, choices=COURSE_LEVEL_CHOICE, default='Beginner')
+    level = models.PositiveIntegerField(default=0)
     interested = models.PositiveIntegerField(default=0)
 
     def __str__(self):
@@ -70,9 +71,11 @@ class Order(models.Model):
         self.save()
 
     def save(self, *args, **kwargs):
-        # Calculate the order price with a 10% discount
-        discount_amount = 0.10 * float(self.course.price) * float(self.levels)
-        self.order_price = float(self.course.price) * float(self.levels) - discount_amount
+        if self.course.price > 150.0:
+            discount_amount = 0.10 * float(self.course.price) * float(self.levels)
+            self.order_price = float(self.course.price) * float(self.levels) - discount_amount
+        else:
+            self.order_price = self.course.price
         super().save(*args, **kwargs)
 
     def __str__(self):
