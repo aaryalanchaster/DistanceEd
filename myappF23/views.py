@@ -27,7 +27,8 @@ def index(request):
 
     if last_login_info:
         # Check if the last login is more than one hour ago
-        last_login_time = timezone.datetime.strptime(last_login_info, "%Y-%m-%d %H:%M:%S")
+        last_login_time = timezone.datetime.strptime(last_login_info, "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc)
+
         one_hour_ago = timezone.now() - timezone.timedelta(hours=1)
 
         if last_login_time >= one_hour_ago:
