@@ -1,0 +1,25 @@
+{% extends 'myappF23/base.html' %} {% load static %}
+{% block body_block %}
+      <body> {% if category_list %}
+            <h2>List of Categories</h2>
+            <ol> {% for category in category_list %}
+                 <li>&nbsp;<a href="{% url 'myappF23:detail' category.id %}">{{ category.name }}</a></li>
+                {% endfor %}
+            </ol>
+            {% else %}
+            <strong>There are no available categories!</strong>
+            {% endif %}
+
+    <p>This page has been visited {{ visits }} times.</p>
+
+      {% if request.session.last_login_info %}
+        <p>Last Login: {{ request.session.last_login_info }}</p>
+      {% endif %}
+
+      {% if message %}
+    <p>{{ message }}</p>
+{% endif %}
+
+{#            <p><a href="{% url 'myappF23:about' %}">About page</a></p>#}
+        </body>
+{% endblock %}
