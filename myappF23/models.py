@@ -1,20 +1,38 @@
 # Create your models here.
 from django.db import models
-
+from django.contrib.auth import get_user_model
 
 class Student(models.Model):
     STUDENT_STATUS_CHOICES = [
-        ('ER', 'Enrolled'), ('SP', 'Suspended'), ('GD', 'Graduated'), ]
+        ('ER', 'Enrolled'),
+        ('SP', 'Suspended'),
+        ('GD', 'Graduated'),
+    ]
+
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    email = models.EmailField(max_length=100, unique=True)
+    email = models.EmailField(unique=True)  # Unique email field
     date_of_birth = models.DateField()
-    status = models.CharField(max_length=10, choices=STUDENT_STATUS_CHOICES,
-                              default='enrolled')
+    status = models.CharField(max_length=2, choices=STUDENT_STATUS_CHOICES, default='ER')
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+    
+    def create_user(self):
+        if not self.user:
+            # Set a fixed password for every student
+            fixed_password = '1234'
 
+            # Create the user with the fixed password
+            user = get_user_model().objects.create_user(
+                email=self.email,
+                username=self.email,
+                password=fixed_password
+            )
+            self.user = user
+            self.save()
+
+            return fixed_password  # Return the fixed password
 
 class Category(models.Model):
     name = models.CharField(max_length=100)

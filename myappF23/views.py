@@ -6,10 +6,11 @@ from django.urls import reverse
 from django.utils import timezone
 
 from .forms import OrderForm, InterestForm
-from .models import Category, Course, Instructor, Order
+from .models import Category, Course, Instructor, Order, Student
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 
 
 # Create your views here.
@@ -123,21 +124,41 @@ def coursedetail(request, course_id):
     return render(request, 'myappF23/coursedetail.html', {'course': course, 'form': form})
 
 
+# def user_login(request):
+#     if request.method == 'POST':
+#         username = request.POST['username']
+#         password = request.POST['password']
+#         user = authenticate(username=username, password=password)
+
+#         if user:
+#             if user.is_active:
+#                 login(request, user)
+#                 current_login_info = timezone.now().strftime("%Y-%m-%d %H:%M:%S")
+
+#                 # Store this value as a session parameter (last_login_info)
+#                 request.session['last_login_info'] = current_login_info
+
+#                 # Set the session expiry to 1 hour (3600 seconds)
+#                 request.session.set_expiry(3600)
+#                 return HttpResponseRedirect(reverse('myappF23:index'))
+#             else:
+#                 return HttpResponse('Your account is disabled.')
+#         else:
+#             return HttpResponse('Invalid login details.')
+#     else:
+#         return render(request, 'myappF23/login.html')
+
 def user_login(request):
     if request.method == 'POST':
-        username = request.POST['username']
+        email = request.POST['email']
         password = request.POST['password']
-        user = authenticate(username=username, password=password)
+        # user = authenticate(request, email=email, password=password)
 
         if user:
             if user.is_active:
                 login(request, user)
                 current_login_info = timezone.now().strftime("%Y-%m-%d %H:%M:%S")
-
-                # Store this value as a session parameter (last_login_info)
                 request.session['last_login_info'] = current_login_info
-
-                # Set the session expiry to 1 hour (3600 seconds)
                 request.session.set_expiry(3600)
                 return HttpResponseRedirect(reverse('myappF23:index'))
             else:
@@ -156,17 +177,37 @@ def user_logout(request):
     return HttpResponseRedirect(reverse('myappF23:index'))
 
 
+# @login_required
+# def myaccount(request):
+#     user = request.user
+#     if hasattr(user, 'student'):
+#         student = user.student
+#         orders = Order.objects.filter(student=student)
+#         interested_courses = student.course_set.all()
+#         return render(request, 'myappF23/myaccount.html',
+#                       {'student': student, 'orders': orders, 'interested_courses': interested_courses})
+#     else:
+#         return HttpResponse('You are not a registered student!')
+
 @login_required
 def myaccount(request):
     user = request.user
-    if hasattr(user, 'student'):
-        student = user.student
-        orders = Order.objects.filter(student=student)
-        interested_courses = student.course_set.all()
-        return render(request, 'myappF23/myaccount.html',
-                      {'student': student, 'orders': orders, 'interested_courses': interested_courses})
-    else:
-        return HttpResponse('You are not a registered student!')
+    student = Student.objects.filter(user=user).first()
+
+    if not student:
+        return render(request, 'myappF23/not_registered_student.html')
+
+    ordered_courses = Order.objects.filter(student=student)
+    interested_courses = Course.objects.filter(students=student)
+
+    context = {
+        'student': student,
+        'ordered_courses': ordered_courses,
+        'interested_courses': interested_courses,
+    }
+
+    return render(request, 'myappF23/myaccount.html', context)
+
 
 # different views to test cookies in lab9
 def set_cookie(request):
