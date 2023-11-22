@@ -1,4 +1,5 @@
 # Create your models here.
+from django.contrib.auth.models import User
 from django.db import models
 
 
@@ -11,6 +12,7 @@ class Student(models.Model):
     date_of_birth = models.DateField()
     status = models.CharField(max_length=10, choices=STUDENT_STATUS_CHOICES,
                               default='enrolled')
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
@@ -48,6 +50,7 @@ class Course(models.Model):
     #     max_length=10, choices=COURSE_LEVEL_CHOICE, default='Beginner')
     level = models.PositiveIntegerField(default=0)
     interested = models.PositiveIntegerField(default=0)
+    interested_students = models.ManyToManyField(Student, blank=True, related_name='interested_students')
 
     def __str__(self):
         return self.title
